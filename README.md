@@ -16,25 +16,32 @@ sú heuristické postupy, aplikujúce princípy z evolučnej biológie. Použív
 
 ##Aplikácia
 Pri aplikovaní genetického algoritmu sme použili obecné schéma : 
-1. Inicializace
-2. Výber jedincov z populácie
-3. Kríženie, Mutácia, Reprodukcia
-4. Ohodnotenie nových jedincov
 
-1.Inicializácia
+1. Inicializácia </br>
+2. Výber jedincov z populácie </br>
+3. Kríženie, Mutácia </br>
+4. Ohodnotenie nových jedincov </br>
 
+<section>
 
-2. Výber jedincov z populácie - selekcia.
+1 . Inicializácia
+
+Inicializácia stanovuje veľkosť generácie, a počiatočnú generáciu vytvorí generovaním náhodných hodnôt.
+
+2 . Výber jedincov z populácie
+
+Nazývané tiež selekcia.
 K selekcii sme využili princíp **váženej rulety**, ktorá dostáva percentuálne taký podiel, a tým pádom možnosť byť vybratý ku kríženiu, ako dobré ohodonotenie dostal.
 
-3. Kríženie, Mutácia
+3 . Kríženie, Mutácia
+
 Kríženie je založené na genetickom princípe kríženia, a teda kombinovaní genetického kódu rodičov. Nech máme otca **O** a matku **M**. Rozhodneme sa, že rozdelenie nastane na **i**-tej pozícii. Potom potomci **P,Q** sú určení: **P** = O[0..i].M[i+1..n], **Q** = M[0..i].O[i+1..m]
-Mutácia nastáva po krížei. Každý nový jedinec sa s určitou **malou** pravdepodobnosťou zmutuje
+Mutácia nastáva po krížení. Každý nový jedinec sa s určitou **malou** pravdepodobnosťou zmutuje, čo reprezentuje zmenu časti génu.
 
+4 . Ohodnotenie nových jedincov
 
+Každého jedinca z populácie ohodnotíme pomocou **fitness funckie**. Následne sa pokračuje krokom 2.
+</section>
 
-Výstupom je najzdatnejší jedinec, v našom prípade postupnosť krokov pre robota.
+**Výstupom** je najzdatnejší jedinec, v našom prípade postupnosť krokov pre robota.
 
-
-
-Uvažujme cestu robota ako funckiu. Robota vž
