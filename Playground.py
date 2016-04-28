@@ -11,15 +11,17 @@ treasurePic = pygame.image.load("treasure.png")
 wallPic = pygame.image.load("wall.jpg")
 
 
+
 class Playground:
-    def __init__(self, way,roodSize, gamesize, tresure, robotInit):
-        self.way = way
+    def __init__(self, strategy, roodSize, gameSize, gameMap, robotInit):
+        self.strategy = strategy
         self.roodSize = roodSize
-        self.gamesize = gamesize
-        self.trueGameSize = [gamesize[0]*roodSize, gamesize[1] * roodSize ]
+        self.gameSize = gameSize
+        self.gameMap = gameMap
+        self.trueGameSize = (gameSize[0]*roodSize, gameSize[1] * roodSize )
         self.wasRed = [False,0]
-        self.robot = [robotInit[0] * roodSize, robotInit[1] * roodSize]
-        self.treasures = self.convertCoordinates(tresure)
+        self.robotPos = robotInit
+
         self.robotPic = pygame.transform.scale(robotPic, (roodSize, roodSize))
         self.treasurePic = pygame.transform.scale(treasurePic, (roodSize, roodSize))
         self.wallPic = pygame.transform.scale(wallPic, (roodSize - 1, roodSize - 1))
@@ -30,50 +32,49 @@ class Playground:
             array[i] = [array[i][0] * self.roodSize, array[i][1] * self.roodSize]
         return array
 
+    def drawEmpty(self,screen, x, y ):
+        pygame.draw.rect(screen, Colors["BROWN"], [x*self.roodSize, y*self.roodSize, self.roodSize, self.roodSize])
+
     def drawRobot(self,screen, x, y):
         pygame.draw.rect(screen,
                          Colors["GREY"],
-                         [x, y, self.roodSize, self.roodSize])
-        screen.blit(self.robotPic, (x, y))
+                         [x*self.roodSize, y*self.roodSize, self.roodSize, self.roodSize])
+        screen.blit(self.robotPic, (x*self.roodSize, y*self.roodSize))
 
     def drawTreasure(self, screen, x, y):
         pygame.draw.rect(screen,
                          Colors["BLACK"],
-                         [x, y, self.roodSize, self.roodSize])
-        screen.blit(self.treasurePic, (x, y))
+                         [x*self.roodSize, y*self.roodSize, self.roodSize, self.roodSize])
+        screen.blit(self.treasurePic, (x*self.roodSize, y*self.roodSize))
 
-    def applyWalls(self,screen):
-        pygame.draw.rect(screen, Colors["BROWN"], [0, 0, self.trueGameSize[0], self.roodSize])
-        pygame.draw.rect(screen, Colors["BROWN"],
-                         [0, self.trueGameSize[1] - self.roodSize, self.trueGameSize[0], self.roodSize])
-        pygame.draw.rect(screen, Colors["BROWN"], [0, 0, self.roodSize, self.trueGameSize[1]])
-        pygame.draw.rect(screen, Colors["BROWN"],
-                         [self.trueGameSize[0] - self.roodSize, 0, self.roodSize, self.trueGameSize[1]])
+    def drawWall(self, screen, x, y):
+        screen.blit(self.wallPic, (x * self.roodSize, y * self.roodSize))
 
-        for i in range(0, self.gamesize[0]):
-            screen.blit(self.wallPic, (i * self.roodSize + 1, 1))
-            screen.blit(self.wallPic, (i * self.roodSize + 1,self.trueGameSize[1]- self.roodSize + 1))
-        for j in range(0, self.gamesize[1]):
-            screen.blit(self.wallPic, (1, j * self.roodSize + 1 ))
-            screen.blit(self.wallPic, (self.trueGameSize[0] - self.roodSize + 1, j * self.roodSize + 1))
+    def drawGame(self, screen, gameMap):
+        for x in range(len(gameMap)):
+            for y in range(len(gameMap[x])):
+                if gameMap[x][y] == '.':
+                    self.drawEmpty(screen, x,y)
+                if gameMap[x][y] == '*':
+                    self.drawTreasure(screen, x, y)
+                if gameMap[x][y] == '#':
+                    self.drawWall(screen, x, y)
+        self.drawRobot(screen, self.robotPos[0], self.robotPos[1])
 
     def run(self):
         pygame.init()
         size = (self.trueGameSize[0],self.trueGameSize[1])
         screen = pygame.display.set_mode(size)
 
-        for treasure in self.treasures:
-            self.drawTreasure(screen, treasure[0], treasure[1])
-
-        self.applyWalls(screen)
-
-        pygame.draw.rect(screen, Colors["GREY"], [self.robot[0], self.robot[1], self.roodSize, self.roodSize])
-        self.drawRobot(screen, self.robot[0], self.robot[1])
+        self.drawGame(screen, self.gameMap)
         pygame.display.flip()
+
         self.wasRed = [True, 204 + 51]
-        for word in self.way:
-            self.move(screen, word)
+
+        for dir in self.strategy:
+            self.move(screen, dir)
             pygame.display.flip()
+
         done = False
         while not done:
             for event in pygame.event.get():
