@@ -74,6 +74,20 @@ def move(position, dir):
     return (position[0] + deltax, position[1] + deltay)
 
 ''' Count fitness function for a strategy on given map and initial position '''
+def objectiveFitness( robot ):
+    gameMapCopy = copy.deepcopy(gameMap)
+    position = robot.init_pos
+    valuation = 0
+    for direction in robot.strategy :
+        newPosition = move(position, direction)
+        x, y = newPosition
+        if gameMapCopy[x][y] != '#': # updates position only if new position empty
+            return valuation
+        if gameMapCopy[x][y] == '*': # collects treasure, position is now empty
+            gameMapCopy[x][y] = '.'
+            valuation += 1
+    return valuation
+
 def getFitness1(robot):
     gameMapCopy = copy.deepcopy(gameMap)
     position = robot.init_pos
@@ -89,6 +103,8 @@ def getFitness1(robot):
             gameMapCopy[x][y] = '.'
 
     return max( valuation, -1000 )
+
+''' Crossover & Mutate functions '''
 
 def crossover( robot_A, robot_B ):
     robot_C = Robot()
