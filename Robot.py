@@ -14,7 +14,7 @@ directions = { 'L': (-1, 0),    # left
                'U': (0, -1) }   # up
 
 values = { '.': 0,      # empty
-           '#': -10,    # border
+           '#': -1000,    # border
            '*': 100 }   # treasure
 
 class Robot:
@@ -88,7 +88,7 @@ def getFitness1(robot):
         if gameMapCopy[x][y] == '*': # collects treasure, position is now empty
             gameMapCopy[x][y] = '.'
 
-    return valuation
+    return max( valuation, -1000 )
 
 def crossover( robot_A, robot_B ):
     robot_C = Robot()
@@ -97,13 +97,20 @@ def crossover( robot_A, robot_B ):
                        + robot_B.strategy[crossing_point:]
     return robot_C
 
-def mutate( robot ):
+def mutate( robot, prob ):
     possibleWays = ['R', 'L', 'U', 'D']
-    mutation_point = random.randrange( len(robot.strategy))
-    robot.strategy[mutation_point] = random.choice(possibleWays)
+    for i in range( len(robot.strategy) ):
+        if random.random() < prob:
+            robot.strategy[i] = random.choice(possibleWays)
 
 random.seed()
 gameMap = getRandomMap()
+
+A = Robot()
+B = Robot()
+
+#print (B.strategy)
+#print (crossover(A,B).strategy)
 
 
         # play = Playground.Playground(generation[1], 50, [10,10], treasurePos)

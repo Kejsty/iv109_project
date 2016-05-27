@@ -5,10 +5,10 @@ import random
 import Robot
 import  Playground
 
-POPULATION_SIZE = 10
-GENERATION_COUNT = 100
-CROSSOVER_PROB = 0.6
-MUTATION_PROB = 0.4
+POPULATION_SIZE = 100
+GENERATION_COUNT = 1000
+CROSSOVER_PROB = 0.8
+MUTATION_PROB = 0.2
 
 def getStatistics( population ):
     fitnesses = [ Robot.getFitness1(robot) for robot in population ]
@@ -41,7 +41,7 @@ def getNewPopulation(population):
     newPopulation = []
     for j in range(POPULATION_SIZE):
 
-        ''' Here you can change the behaviour fo algorithm '''
+        ''' You can change the behaviour of the algorithm here'''
         parent1 = population[ selectParent( wheel ) ]
 
         ''' either continue with original solution '''
@@ -55,8 +55,7 @@ def getNewPopulation(population):
         child = Robot.crossover( parent1, parent2 )
 
         ''' mutate new solution, or mutate original solution '''
-        if random.random() <= MUTATION_PROB:
-            Robot.mutate( child )
+        Robot.mutate( child, MUTATION_PROB )
 
         newPopulation.append( child )
 
@@ -106,6 +105,9 @@ plt.plot( x, best, label='best' )
 plt.plot( x, mean, label='mean' )
 plt.plot( x, worst, label='worst' )
 
-plt.legend()
+
+plt.legend(loc = 'lower right', borderaxespad=0.5)
+
+# plt.legend()
 plt.show()
 
