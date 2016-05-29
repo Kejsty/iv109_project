@@ -1,14 +1,15 @@
-__author__ = 'viki'
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 import Robot
+import simple_init
+import complicated_init
 import  Playground
 
-POPULATION_SIZE = 10
-GENERATION_COUNT = 100
-CROSSOVER_PROB = 0.6
-MUTATION_PROB = 0.4
+POPULATION_SIZE = 100
+GENERATION_COUNT = 1000
+CROSSOVER_PROB = 0.8
+MUTATION_PROB = 0.2
 
 def getStatistics( population ):
     fitnesses = [ Robot.getFitness1(robot) for robot in population ]
@@ -68,6 +69,7 @@ def geneticAlgorithm():
     best = [0] * GENERATION_COUNT
     mean = [0] * GENERATION_COUNT
     worst = [0] * GENERATION_COUNT
+    way = ""
 
     # Initilize
     population = initPopulation()
@@ -79,7 +81,7 @@ def geneticAlgorithm():
         # prepare wheel
 
         population = getNewPopulation( population )
-        best[i], mean[i], worst[i], dev = getStatistics( population )
+        best[i], mean[i], worst[i], dev  = getStatistics( population )
 
         #play = Playground.Playground(population[0], 50, (Robot.ROWS, Robot.COLUMNS), Robot.gameMap, INIT_POS)
         #play.run()
@@ -100,12 +102,30 @@ def geneticAlgorithmMultipleRun( runCount ):
 best, mean, worst = geneticAlgorithm()
 Robot.printMap()
 
+
+# convert strategy to be printable as picture
+# strategy = ""
+#
+# for pos in strategy :
+#     if (pos == 'U'):
+#         strategy += 'L'
+#     if (pos == 'D'):
+#         strategy += 'R'
+#     if (pos == 'R'):
+#         strategy += 'D'
+#     if (pos == 'L'):
+#         strategy += 'U'
+#
+# Robot.doDraw(strategy)
+
 x = np.linspace( 1, GENERATION_COUNT, GENERATION_COUNT )
+# plt.ylim([0,10])
 
 plt.plot( x, best, label='best' )
 plt.plot( x, mean, label='mean' )
 plt.plot( x, worst, label='worst' )
 
-plt.legend()
+plt.legend(loc=4)
 plt.show()
+
 
