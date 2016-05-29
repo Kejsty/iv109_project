@@ -8,10 +8,10 @@ COLUMNS = 10
 
 INIT_POS = (3,5)
 
-directions = { 'L': (-1, 0),    # left
-               'R': (1, 0),     # right
-               'D': (0, 1),     # down
-               'U': (0, -1) }   # up
+directions = { 'L': (0, 1),    # left
+               'R': (0, -1),     # right
+               'D': (1, 0),     # down
+               'U': (-1, 0) }   # up
 
 values = { '.': 0,      # empty
            '#': -1000,    # border
@@ -29,7 +29,7 @@ class Robot:
 
 ''' Creates new random strategy, that is string of L, R, U, D symbols with bounded length '''
 def getRandomStrategy():
-    possibleWays = ['R', 'L', 'U', 'D']
+    possibleWays = ['L', 'R', 'D', 'U']
     size = random.randint(MIN_BOUND, MAX_BOUND)
     strategy = []
     for j in range(size):
@@ -102,7 +102,7 @@ def getFitness1(robot):
         if gameMapCopy[x][y] == '*': # collects treasure, position is now empty
             gameMapCopy[x][y] = '.'
 
-    return max( valuation, -1000 )
+    return valuation
 
 ''' Crossover & Mutate functions '''
 
@@ -114,7 +114,7 @@ def crossover( robot_A, robot_B ):
     return robot_C
 
 def mutate( robot, prob ):
-    possibleWays = ['R', 'L', 'U', 'D']
+    possibleWays = ['L', 'R', 'D', 'U']
     for i in range( len(robot.strategy) ):
         if random.random() < prob:
             robot.strategy[i] = random.choice(possibleWays)

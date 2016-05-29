@@ -73,15 +73,8 @@ def geneticAlgorithm():
 
     # For each generation, select new population
     for i in range(GENERATION_COUNT):
-        #for robot in population:
-            # print(robot.strategy, Robot.getFitness1(robot))
-        # prepare wheel
-
         population = getNewPopulation( population )
         best[i], mean[i], worst[i], dev = getStatistics( population )
-
-        #play = Playground.Playground(population[0], 50, (Robot.ROWS, Robot.COLUMNS), Robot.gameMap, INIT_POS)
-        #play.run()
     return best, mean, worst
 
 def geneticAlgorithmMultipleRun( runCount ):
@@ -97,7 +90,9 @@ def geneticAlgorithmMultipleRun( runCount ):
     return max(bestOfLastGen), np.mean(bestOfLastGen), min(bestOfLastGen), np.std(bestOfLastGen), averageBest
 
 best, mean, worst = geneticAlgorithm()
-Robot.printMap()
+
+best, mean,
+# Robot.printMap()
 
 x = np.linspace( 1, GENERATION_COUNT, GENERATION_COUNT )
 
