@@ -1,0 +1,43 @@
+Simple map with static initial population
+
+{'#': -5, '*': 20, '.': 1}
+POPULATION_SIZE = 100
+GENERATION_COUNT = 1000
+We tried different probabilities:
+
+	crossover = 0.8, mutation = 0.05: 
+
+		best = 196.0, mean = 160.914, worst = -2.8
+
+	crossover = 0.8, mutation = 0.1: 
+
+		best = 184.7, mean = 146.175, worst = -10.0
+
+	crossover = 0.8, mutation = 0.2: 
+
+		best = 173.4, mean = 135.798, worst = -49.7
+
+	crossover = 0.7, mutation = 0.05: 
+
+		best = 201.7, mean = 146.792, worst = 1.1
+
+	crossover = 0.7, mutation = 0.1: 
+
+		best = 184.5, mean = 128.331, worst = -15.8
+
+	crossover = 0.7, mutation = 0.2: 
+
+		best = 166.1, mean = 112.903, worst = -33.5
+
+	crossover = 0.6, mutation = 0.05: 
+
+		best = 199.3, mean = 131.237, worst = 2.7
+
+	crossover = 0.6, mutation = 0.1: 
+
+		best = 183.0, mean = 110.232, worst = -28.6
+
+	crossover = 0.6, mutation = 0.2: 
+
+		best = 174.3, mean = 98.907, worst = -43.0
+

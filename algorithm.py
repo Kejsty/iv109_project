@@ -71,7 +71,7 @@ def geneticAlgorithm():
     way = ""
 
     # Initilize
-    population = initPopulation()
+    population = initPopulation( COMPLICATED_INIT )
 
     # For each generation, select new population
     for i in range(GENERATION_COUNT):
@@ -96,6 +96,34 @@ def geneticAlgorithmMultipleRun( runCount ):
 
 best, mean, worst = geneticAlgorithm()
 
+# best, mean, worst = geneticAlgorithm()
+'''
+optimal = Robot.Robot()
+optimal.strategy = Robot.simpleOptimal
+
+print Robot.getFitness1( optimal )
+print optimal.foundTreasures
+
+print optimal.fitness
+
+Robot.doDraw( Robot.simpleOptimal )
+
+'''
+print "Simple map with static initial population\n"
+
+print Robot.values
+#print "MAX_BOUND = 60\nMIN_BOUND = 20"
+
+print "POPULATION_SIZE = " + str( POPULATION_SIZE ) + "\nGENERATION_COUNT = " + str( GENERATION_COUNT ) + "\nWe tried different probabilities:\n"
+
+for CROSSOVER_PROB in [ 0.8, 0.7, 0.6 ]:
+    for MUTATION_PROB in [ 0.2, 0.3, 0.4 ]:
+        best, mean, worst = geneticAlgorithmMultipleRun( 10 )
+        print "\tcrossover = " + str( CROSSOVER_PROB ) + ", mutation = " + str( MUTATION_PROB ) + ": \n"
+        print "\t\tbest = " + str( best ) + ", mean = " + str( mean ) + ", worst = " + str( worst ) + "\n"
+
+'''
+plt.figure(figsize=(10,5))
 x = np.linspace( 1, GENERATION_COUNT, GENERATION_COUNT )
 # plt.ylim([0,10])
 
@@ -105,5 +133,4 @@ plt.plot( x, worst, label='worst' )
 
 plt.legend(loc=4)
 plt.show()
-
-
+'''
