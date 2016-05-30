@@ -60,7 +60,7 @@ Genetické algoritmy sú vo všeobecnosti heuristické postupy, aplikujúce prin
 
 \textbf{Chromozóm}
 
-V aplikácii genetických algoritmov je chromozóm chápaný ako reťazec, resp. postupnosť symbolov, reprezentujúci jedinca s výslednými vlastnosťami. Každá vlastnosť nejako popisuje riešenie a preto reťazec chápeme ako riešenie.\\
+V aplikácii genetických algoritmov je chromozóm chápaný ako reťazec, resp. postupnosť symbolov, reprezentujúci jedinca s výslednými vlastnosťami. Každá vlastnosť nejako popisuje časť riešenia a preto reťazec chápeme ako riešenie samotné.\\
 
 \textbf{Gén}
 
@@ -74,7 +74,7 @@ Populáciou rozumieme skupinu reťazcov, a teda potencionálnych riešení. Nad 
 
 Táto funkcia priradí každému chromozómu, a teda riešeniu hodnotu, vypovedajúcu o jeho úspešnosti. Fitness funkcia pomáha optimalizovať riešenie na základe snahy získať chromozóm s maximálnym ohodnotením. Táto funkcia by preto mala byť vhodne definovaná.
 
-V našej aplikácii sú použité a porovnané rôzne fitness funkcie a ich vplyv na výsledné riešenie (úspešnosť robota). Každá funkcia zároveň potrebuje inak vyladené parametre, by ktorých dáva najlepšie výsledky. Tento fakt tiež zohľadníme v našej analýze.\\
+V našej aplikácii sú použité a porovnané rôzne fitness funkcie a ich vplyv na výsledné riešenie (úspešnosť robota). Každá funkcia zároveň potrebuje inak vyladené parametre, pri ktorých dáva najlepšie výsledky. Tento fakt tiež zohľadníme v našej analýze.\\
 
 \textbf{Kríženie}
 
@@ -94,7 +94,7 @@ Prostredie, v ktorom sa robot pohybuje, je reprezentované ohraničenou mapou, n
 
 V kontexte nášho problému pod pojmom \textbf{gén} chápeme symbol z množiny \{$L, R, U, D$\}, reprezentujúci pohyb po mape (doľava, doprava, hore, dole). \textbf{Chromozómom} je reťazec symbolov pohybu, takže určuje celú cestu robota na mape. Dĺžka reťazca závisí od veľkosti mapy. Pri príliš krátkej ceste nemá robot šancu pozbierať dostatočné množstvo pokladu, pri príliš dlhom robí zbytočne veľa krokov navyše a tým stráca na kvalite. 
 
-Pri analýze sme uvažovali rôzne \textbf{fitness funkcie} líšiace sa v ohodnotení pohybu. Rozlišujeme, kedy robot nájde poklad, narazí na stenu alebo ani jedno z toho. V prípade, že robot narazí na stenu, ostane stáť na mieste.
+Pri analýze sme uvažovali rôzne \textbf{fitness funkcie} líšiace sa v ohodnotení pohybu. Rozlišujeme, kedy robot nájde poklad, narazí na stenu, alebo ani jedno z toho. V prípade, že robot narazí na stenu, ostane stáť na mieste.
 
 Kríženie aj mutácie prebiehajú vždy s dopredu danou pravdepodonosťou na celý beh genetického algorimtu.
 
@@ -143,7 +143,7 @@ Fitness funkcia sa pri jednotlivých pohyboch správa nasledovne:
 \item Ak narazí na stenu, stratí 5 bodov.
 \item Inak robot získa 1 bod.
 \end{itemize}
-Robota odmeníme ak nájde poklad, a potrestáme, ak narazí do steny. Zároveň ho motivujeme objavovať nové časti mapy tým, že ho odmeníme za každý krok. Avšak pri veľmi malom pomere odmeny za poklad a za chodenie táto stratégia generuje dlhé riešenia, ktoré však nájdu malý počet pokladov.
+Robota odmeníme, ak nájde poklad a potrestáme, ak narazí do steny. Zároveň ho motivujeme objavovať nové časti mapy tým, že ho odmeníme za každý krok. Avšak pri veľmi malom pomere odmeny za poklad a za chodenie táto stratégia generuje dlhé riešenia, ktoré však nájdu malý počet pokladov.
 
 Pre danú funkciu sme vyskúšali, ako dobré riešenia vďaka nej natrénujeme pri rôznych parametroch. Konkrétne sme menily parametre pravdepodobnosti kríženia a mutácií. Veľkosť populácia bola vo všektých behoch 100, počet generácií 1000. Pre každú kombináciu sme spustili algoritmus 10-krát a výsledky spriemerovali. Pozorovali sme najlepšieho (best) a najhoršieho (worst) jedinca poslednej generácie a priemerné ohodnotenie jedincov v poslednej generácii (mean). Získané údaje sú v nasledujúcich tabulkách.
 
@@ -278,7 +278,7 @@ Funkciu nazveme objektívnou, pretože zodpovedá presnému počtu pokladov, kto
 \item Iný pohyb nemá vplyv na ohodnotenie.
 \end{itemize} 
 
-Algoritmus sme opäť spustili 10-krát pre každú kombináciu parametrov, rovnako ako pre predošlä funkciu s nemennou veľkosťou populácie 100 a počtom generácií 1000.
+Algoritmus sme opäť spustili 10-krát pre každú kombináciu parametrov, rovnako ako pre predošlú funkciu s nemennou veľkosťou populácie 100 a počtom generácií 1000.
 
 
 \begin{center}
@@ -352,11 +352,12 @@ Skúšali sme aj iné fitness funkcie, ktoré by každy krok ohodnotili záporno
 
 \section{Možnosť rozšírenia problému}
 
-Okrem skúmania rôznych ohodnotení pohybu môžeme pri fitness funkcii uvažovať chovanie pri narazení na stenu. Robot môže ostať stáť, čo je prístup, ktorý sme použili mi, alebo úplne ukončiť vyhodnocovanie svojej cesty. Problém sa dá rozšíriť na väčšie mapy, náhodne generované mapy, mapy bez ohraničenia - pri prejdení cez okraj sa robot objaví na opačnej strane. Môžeme do chromozómu pridať počiatočnú pozíciu robota na mape, ktorú sa algoritmus bude snažiť optimalizovať.
+Okrem skúmania rôznych ohodnotení pohybu môžeme pri fitness funkcii uvažovať chovanie pri narazení na stenu. Robot môže ostať stáť, čo je prístup, ktorý sme použili my, alebo úplne ukončiť vyhodnocovanie svojej cesty. Problém sa dá rozšíriť na väčšie mapy, náhodne generované mapy, mapy bez ohraničenia - pri prejdení cez okraj sa robot objaví na opačnej strane. Môžeme do chromozómu pridať počiatočnú pozíciu robota na mape, ktorú sa algoritmus bude snažiť optimalizovať.
 
 \section{Záver}
 
-Navrhli sme a implementovali riešenie problému podľa štruktúry genetického algoritmu. Identifkovali sme parametre algoritmu a skúmali sme, ako ich zmena vplýva na jeho výkon. Porovnali sme výsledky pre jednotlivé kombinácie a určili najlepšiu možnú kombináciu parametrov pre daný problém. Tým považujeme zadanie za splnené.
+Navrhli sme a implementovali riešenie problému podľa štruktúry genetického algoritmu. Identifkovali sme parametre algoritmu a skúmali sme, ako ich zmena vplýva na jeho výkon. Porovnali sme výsledky pre jednotlivé kombinácie a určili najlepšiu možnú kombináciu parametrov pre daný problém.
+
 \section{Zdroje}
 
 Pri popise a tvorbe genetického algoritmu sme sa inšpirovali uvedenou literatúrou. Zdrojový kód a použité obrázky sú autorská tvorba.\\
