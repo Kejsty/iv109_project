@@ -1,8 +1,9 @@
-__author__ = 'viki'
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 import Robot
+import simple_init
+import complicated_init
 import  Playground
 
 POPULATION_SIZE = 100
@@ -67,6 +68,7 @@ def geneticAlgorithm():
     best = [0] * GENERATION_COUNT
     mean = [0] * GENERATION_COUNT
     worst = [0] * GENERATION_COUNT
+    way = ""
 
     # Initilize
     population = initPopulation()
@@ -75,6 +77,9 @@ def geneticAlgorithm():
     for i in range(GENERATION_COUNT):
         population = getNewPopulation( population )
         best[i], mean[i], worst[i], dev = getStatistics( population )
+
+        #play = Playground.Playground(population[0], 50, (Robot.ROWS, Robot.COLUMNS), Robot.gameMap, INIT_POS)
+        #play.run()
     return best, mean, worst
 
 def geneticAlgorithmMultipleRun( runCount ):
@@ -91,18 +96,14 @@ def geneticAlgorithmMultipleRun( runCount ):
 
 best, mean, worst = geneticAlgorithm()
 
-best, mean,
-# Robot.printMap()
-
 x = np.linspace( 1, GENERATION_COUNT, GENERATION_COUNT )
+# plt.ylim([0,10])
 
 plt.plot( x, best, label='best' )
 plt.plot( x, mean, label='mean' )
 plt.plot( x, worst, label='worst' )
 
-
-plt.legend(loc = 'lower right', borderaxespad=0.5)
-
-# plt.legend()
+plt.legend(loc=4)
 plt.show()
+
 

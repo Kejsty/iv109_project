@@ -1,20 +1,22 @@
 import copy
 import random
+import Playground
+
 MAX_BOUND = 60
-MIN_BOUND = 20
+MIN_BOUND = 40
 
 ROWS = 10
 COLUMNS = 10
 
 INIT_POS = (3,5)
 
-directions = { 'L': (0, 1),    # left
-               'R': (0, -1),     # right
-               'D': (1, 0),     # down
-               'U': (-1, 0) }   # up
+directions = { 'L': (-1, 0),    # left
+               'R': (1, 0),     # right
+               'D': (0, 1),     # down
+               'U': (0, -1) }   # up
 
 values = { '.': 0,      # empty
-           '#': -1000,    # border
+           '#': -10,    # border
            '*': 100 }   # treasure
 
 class Robot:
@@ -96,7 +98,6 @@ def getFitness1(robot):
         newPosition = move(position, direction)
         x, y = newPosition
         valuation += values[ gameMapCopy[x][y] ]
-
         if gameMapCopy[x][y] != '#': # updates position only if new position empty
             position = newPosition
         if gameMapCopy[x][y] == '*': # collects treasure, position is now empty
@@ -120,14 +121,35 @@ def mutate( robot, prob ):
             robot.strategy[i] = random.choice(possibleWays)
 
 random.seed()
-gameMap = getRandomMap()
+simpleMap =[
+['#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
+['#', '.', '.', '.', '.', '.', '.', '#', '.', '#'],
+['#', '.', '.', '*', '#', '.', '.', '.', '.', '#'],
+['#', '*', '#', '.', '#', '.', '*', '.', '*', '#'],
+['#', '.', '#', '.', '.', '*', '#', '#', '.', '#'],
+['#', '*', '#', '.', '*', '.', '.', '.', '.', '#'],
+['#', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
+['#', '.', '#', '.', '.', '.', '#', '#', '.', '#'],
+['#', '.', '.', '*', '.', '*', '#', '*', '.', '#'],
+['#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
+]
 
-A = Robot()
-B = Robot()
+complicatedMap =[
+['#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
+['#', '.', '#', '*', '*', '.', '.', '.', '.', '#'],
+['#', '.', '#', '#', '#', '#', '#', '#', '.', '#'],
+['#', '*', '#', '.', '#', '.', '*', '#', '*', '#'],
+['#', '.', '#', '.', '#', '*', '#', '#', '.', '#'],
+['#', '.', '#', '.', '*', '.', '.', '.', '.', '#'],
+['#', '.', '.', '.', '.', '.', '.', '#', '.', '#'],
+['#', '#', '#', '#', '.', '.', '#', '#', '.', '#'],
+['#', '*', '.', '*', '.', '*', '#', '*', '.', '#'],
+['#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
+]
 
-#print (B.strategy)
-#print (crossover(A,B).strategy)
+gameMap = complicatedMap
 
 
-        # play = Playground.Playground(generation[1], 50, [10,10], treasurePos)
-# play.run()
+def doDraw(way):
+    play = Playground.Playground(way)
+    play.run()
