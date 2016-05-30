@@ -2,24 +2,33 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import Robot
-import simple_init
-import complicated_init
 import  Playground
+from simple_init import SIMPLE_INIT
+from complicated_init import COMPLICATED_INIT
 
 POPULATION_SIZE = 100
 GENERATION_COUNT = 1000
-CROSSOVER_PROB = 0.8
-MUTATION_PROB = 0.2
+CROSSOVER_PROB = 0.6
+MUTATION_PROB = 0.4
 
 def getStatistics( population ):
     fitnesses = [ Robot.getFitness1(robot) for robot in population ]
     return max(fitnesses), np.mean(fitnesses), min(fitnesses), np.std(fitnesses)
 
+def findBest( population ):
+    best = None
+    for robot in population:
+        if best is None:
+            best = robot
+        if robot.fitness > best.fitness:
+            best = robot
+    return best
 
-def initPopulation():
+def initPopulation( init ):
     list = []
     for i in range(POPULATION_SIZE):
         list.append( Robot.Robot() )
+        list[i].strategy = init[i]
     return list
 
 def selectParent( wheel ):
@@ -65,23 +74,32 @@ def getNewPopulation(population):
 
 def geneticAlgorithm():
     # Statistics
-    best = [0] * GENERATION_COUNT
-    mean = [0] * GENERATION_COUNT
-    worst = [0] * GENERATION_COUNT
+    bestList = [0] * GENERATION_COUNT
+    meanList = [0] * GENERATION_COUNT
+    worstList = [0] * GENERATION_COUNT
     way = ""
 
     # Initilize
-    population = initPopulation()
+    population = initPopulation( COMPLICATED_INIT )
 
     # For each generation, select new population
     for i in range(GENERATION_COUNT):
         population = getNewPopulation( population )
-        best[i], mean[i], worst[i], dev = getStatistics( population )
+        bestList[i], meanList[i], worstList[i], dev = getStatistics( population )
 
-        #play = Playground.Playground(population[0], 50, (Robot.ROWS, Robot.COLUMNS), Robot.gameMap, INIT_POS)
+        #play = Playground.Playground( population[i].strategy )
         #play.run()
+        #break
+    '''
+    bestOfLast = findBest( population )
+    print str( bestOfLast.fitness ) + ", " + str( bestOfLast.foundTreasures )
+    print bestOfLast.strategy
+    Robot.doDraw( bestOfLast.strategy )'''
+    best, mean, worst, dev = getStatistics( population )
     return best, mean, worst
+    # return bestList, meanList, worstList
 
+'''
 def geneticAlgorithmMultipleRun( runCount ):
     bestOfLastGen = []
     averageBest = [0] * GENERATION_COUNT
@@ -93,11 +111,49 @@ def geneticAlgorithmMultipleRun( runCount ):
     for i in range(GENERATION_COUNT):
         averageBest[i] /= 20
     return max(bestOfLastGen), np.mean(bestOfLastGen), min(bestOfLastGen), np.std(bestOfLastGen), averageBest
+'''
 
-best, mean, worst = geneticAlgorithm()
+def geneticAlgorithmMultipleRun( runCount ):
+    bestOfLast = [ 0 ] * runCount
+    meanOfLast = [ 0 ] * runCount
+    worstOfLast = [ 0 ] * runCount
+    for i in range( runCount ):
+        bestOfLast[i], meanOfLast[i], worstOfLast[i] = geneticAlgorithm()
+    return np.mean( bestOfLast ), np.mean( meanOfLast ), np.mean( worstOfLast )
 
+# best, mean, worst = geneticAlgorithm()
+'''
+optimal = Robot.Robot()
+optimal.strategy = Robot.simpleOptimal
+
+print Robot.getFitness1( optimal )
+print optimal.foundTreasures
+
+print optimal.fitness
+
+Robot.doDraw( Robot.simpleOptimal )
+
+'''
+print "Simple map with static initial population\n"
+
+print Robot.values
+#print "MAX_BOUND = 60\nMIN_BOUND = 20"
+
+print "POPULATION_SIZE = " + str( POPULATION_SIZE ) + "\nGENERATION_COUNT = " + str( GENERATION_COUNT ) + "\nWe tried different probabilities:\n"
+
+for CROSSOVER_PROB in [ 0.8, 0.7, 0.6 ]:
+    for MUTATION_PROB in [ 0.2, 0.3, 0.4 ]:
+        best, mean, worst = geneticAlgorithmMultipleRun( 10 )
+        print "\tcrossover = " + str( CROSSOVER_PROB ) + ", mutation = " + str( MUTATION_PROB ) + ": \n"
+        print "\t\tbest = " + str( best ) + ", mean = " + str( mean ) + ", worst = " + str( worst ) + "\n"
+
+'''
+plt.figure(figsize=(10,5))
 x = np.linspace( 1, GENERATION_COUNT, GENERATION_COUNT )
-# plt.ylim([0,10])
+plt.xlim([0,GENERATION_COUNT])
+#plt.ylim([0,10])
+
+
 
 plt.plot( x, best, label='best' )
 plt.plot( x, mean, label='mean' )
@@ -105,5 +161,5 @@ plt.plot( x, worst, label='worst' )
 
 plt.legend(loc=4)
 plt.show()
-
-
+'''
+# Robot.doDraw( ['U', 'R', 'R', 'R', 'L', 'L', 'D', 'D', 'U', 'D', 'L', 'R', 'D', 'R', 'L', 'R', 'D', 'U', 'R', 'L', 'L', 'D', 'L', 'U', 'D', 'R', 'D', 'D', 'L', 'L', 'R', 'L', 'R', 'U', 'U', 'U', 'D', 'U', 'L', 'D', 'R', 'L', 'R', 'D', 'R', 'D', 'L', 'L', 'L', 'L', 'D', 'U', 'L', 'R', 'R', 'R', 'R', 'L', 'U', 'U', 'U', 'R', 'U', 'L', 'D', 'D', 'L'] )

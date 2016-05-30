@@ -3,27 +3,29 @@ import random
 import Playground
 
 MAX_BOUND = 60
-MIN_BOUND = 40
+MIN_BOUND = 20
 
 ROWS = 10
 COLUMNS = 10
 
 INIT_POS = (3,5)
 
-directions = { 'L': (-1, 0),    # left
-               'R': (1, 0),     # right
-               'D': (0, 1),     # down
-               'U': (0, -1) }   # up
+directions = { 'L': (0, -1),    # left
+               'R': (0, 1),     # right
+               'D': (1, 0),     # down
+               'U': (-1, 0) }   # up
 
 values = { '.': 0,      # empty
-           '#': -10,    # border
-           '*': 100 }   # treasure
+           '#': 0,    # border
+           '*': 1 }   # treasure
 
 class Robot:
     def __init__(self):
         self.init_pos = INIT_POS
         self.pos = INIT_POS
         self.strategy = getRandomStrategy()
+        self.fitness = None
+        self.foundTreasures = None
 
     def updatePos(self, dir):
         self.pos[0], self.pos[1] = self.pos[0] + directions[dir][0], self.pos[1] + directions[dir][1]
@@ -76,34 +78,24 @@ def move(position, dir):
     return (position[0] + deltax, position[1] + deltay)
 
 ''' Count fitness function for a strategy on given map and initial position '''
-def objectiveFitness( robot ):
-    gameMapCopy = copy.deepcopy(gameMap)
-    position = robot.init_pos
-    valuation = 0
-    for direction in robot.strategy :
-        newPosition = move(position, direction)
-        x, y = newPosition
-        if gameMapCopy[x][y] != '#': # updates position only if new position empty
-            return valuation
-        if gameMapCopy[x][y] == '*': # collects treasure, position is now empty
-            gameMapCopy[x][y] = '.'
-            valuation += 1
-    return valuation
-
 def getFitness1(robot):
-    gameMapCopy = copy.deepcopy(gameMap)
-    position = robot.init_pos
-    valuation = 0
-    for direction in robot.strategy :
-        newPosition = move(position, direction)
-        x, y = newPosition
-        valuation += values[ gameMapCopy[x][y] ]
-        if gameMapCopy[x][y] != '#': # updates position only if new position empty
-            position = newPosition
-        if gameMapCopy[x][y] == '*': # collects treasure, position is now empty
-            gameMapCopy[x][y] = '.'
-
-    return valuation
+    if ( robot.fitness is None ):
+        gameMapCopy = copy.deepcopy(gameMap)
+        position = robot.init_pos
+        robot.foundTreasures = 0
+        valuation = 0
+        for direction in robot.strategy :
+            newPosition = move(position, direction)
+            x, y = newPosition
+            valuation += values[ gameMapCopy[x][y] ]
+            if gameMapCopy[x][y] != '#': # updates position only if new position empty
+                position = newPosition
+            if gameMapCopy[x][y] == '*': # collects treasure, position is now empty
+                gameMapCopy[x][y] = '.'
+                robot.foundTreasures += 1
+        robot.fitness = valuation
+        return valuation
+    return robot.fitness
 
 ''' Crossover & Mutate functions '''
 
@@ -138,18 +130,29 @@ complicatedMap =[
 ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
 ['#', '.', '#', '*', '*', '.', '.', '.', '.', '#'],
 ['#', '.', '#', '#', '#', '#', '#', '#', '.', '#'],
-['#', '*', '#', '.', '#', '.', '*', '#', '*', '#'],
+['#', '*', '#', '.', '#', '.', '.', '#', '*', '#'],
 ['#', '.', '#', '.', '#', '*', '#', '#', '.', '#'],
 ['#', '.', '#', '.', '*', '.', '.', '.', '.', '#'],
-['#', '.', '.', '.', '.', '.', '.', '#', '.', '#'],
+['#', '.', '.', '.', '.', '.', '#', '#', '.', '#'],
 ['#', '#', '#', '#', '.', '.', '#', '#', '.', '#'],
-['#', '*', '.', '*', '.', '*', '#', '*', '.', '#'],
+['#', '*', '.', '*', '.', '*', '.', '*', '.', '#'],
 ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
 ]
 
+simpleOptimal = [ 'R', 'R', 'R', 'D', 'D', 'D', 'D', 'D', 'L', 'R', 'U', 'U', 'L', 'L', 'L', 'D', 'D', 'L', 'L', 'L', 'L', 'U', 'U', 'U', 'U', 'U', 'U', 'R', 'R', 'D', 'D', 'D', 'R', 'R', 'U'  ]
+
 gameMap = complicatedMap
+
+pos = ( 3, 5 )
+
+for dir in directions:
+    x, y =  move( pos, dir )
+    print str( dir ) + " " + complicatedMap[x][y]
 
 
 def doDraw(way):
     play = Playground.Playground(way)
     play.run()
+
+
+#doDraw("")
