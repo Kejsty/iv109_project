@@ -143,12 +143,6 @@ simpleOptimal = [ 'R', 'R', 'R', 'D', 'D', 'D', 'D', 'D', 'L', 'R', 'U', 'U', 'L
 
 gameMap = complicatedMap
 
-pos = ( 3, 5 )
-
-for dir in directions:
-    x, y =  move( pos, dir )
-    print str( dir ) + " " + complicatedMap[x][y]
-
 
 def doDraw(way):
     play = Playground.Playground(way)
