@@ -3,27 +3,29 @@ import random
 import Playground
 
 MAX_BOUND = 60
-MIN_BOUND = 40
+MIN_BOUND = 20
 
 ROWS = 10
 COLUMNS = 10
 
 INIT_POS = (3,5)
 
-directions = { 'L': (-1, 0),    # left
-               'R': (1, 0),     # right
-               'D': (0, 1),     # down
-               'U': (0, -1) }   # up
+directions = { 'L': (0, -1),    # left
+               'R': (0, 1),     # right
+               'D': (1, 0),     # down
+               'U': (-1, 0) }   # up
 
-values = { '.': 1,      # empty
-           '#': -5,    # border
-           '*': 20 }   # treasure
+values = { '.': 0,      # empty
+           '#': 0,    # border
+           '*': 1 }   # treasure
 
 class Robot:
     def __init__(self):
         self.init_pos = INIT_POS
         self.pos = INIT_POS
         self.strategy = getRandomStrategy()
+        self.fitness = None
+        self.foundTreasures = None
 
     def updatePos(self, dir):
         self.pos[0], self.pos[1] = self.pos[0] + directions[dir][0], self.pos[1] + directions[dir][1]
@@ -31,7 +33,7 @@ class Robot:
 
 ''' Creates new random strategy, that is string of L, R, U, D symbols with bounded length '''
 def getRandomStrategy():
-    possibleWays = ['R', 'L', 'U', 'D']
+    possibleWays = ['L', 'R', 'D', 'U']
     size = random.randint(MIN_BOUND, MAX_BOUND)
     strategy = []
     for j in range(size):
@@ -77,19 +79,25 @@ def move(position, dir):
 
 ''' Count fitness function for a strategy on given map and initial position '''
 def getFitness1(robot):
-    gameMapCopy = copy.deepcopy(gameMap)
-    position = robot.init_pos
-    valuation = 0
-    for direction in robot.strategy :
-        newPosition = move(position, direction)
-        x, y = newPosition
-        valuation += values[ gameMapCopy[x][y] ]
-        if gameMapCopy[x][y] != '#': # updates position only if new position empty
-            position = newPosition
-        if gameMapCopy[x][y] == '*': # collects treasure, position is now empty
-            gameMapCopy[x][y] = '.'
+    if ( robot.fitness is None ):
+        gameMapCopy = copy.deepcopy(gameMap)
+        position = robot.init_pos
+        robot.foundTreasures = 0
+        valuation = 0
+        for direction in robot.strategy :
+            newPosition = move(position, direction)
+            x, y = newPosition
+            valuation += values[ gameMapCopy[x][y] ]
+            if gameMapCopy[x][y] != '#': # updates position only if new position empty
+                position = newPosition
+            if gameMapCopy[x][y] == '*': # collects treasure, position is now empty
+                gameMapCopy[x][y] = '.'
+                robot.foundTreasures += 1
+        robot.fitness = valuation
+        return valuation
+    return robot.fitness
 
-    return valuation
+''' Crossover & Mutate functions '''
 
 def crossover( robot_A, robot_B ):
     robot_C = Robot()
@@ -98,10 +106,11 @@ def crossover( robot_A, robot_B ):
                        + robot_B.strategy[crossing_point:]
     return robot_C
 
-def mutate( robot ):
-    possibleWays = ['R', 'L', 'U', 'D']
-    mutation_point = random.randrange( len(robot.strategy))
-    robot.strategy[mutation_point] = random.choice(possibleWays)
+def mutate( robot, prob ):
+    possibleWays = ['L', 'R', 'D', 'U']
+    for i in range( len(robot.strategy) ):
+        if random.random() < prob:
+            robot.strategy[i] = random.choice(possibleWays)
 
 random.seed()
 simpleMap =[
@@ -121,18 +130,29 @@ complicatedMap =[
 ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
 ['#', '.', '#', '*', '*', '.', '.', '.', '.', '#'],
 ['#', '.', '#', '#', '#', '#', '#', '#', '.', '#'],
-['#', '*', '#', '.', '#', '.', '*', '#', '*', '#'],
+['#', '*', '#', '.', '#', '.', '.', '#', '*', '#'],
 ['#', '.', '#', '.', '#', '*', '#', '#', '.', '#'],
 ['#', '.', '#', '.', '*', '.', '.', '.', '.', '#'],
-['#', '.', '.', '.', '.', '.', '.', '#', '.', '#'],
+['#', '.', '.', '.', '.', '.', '#', '#', '.', '#'],
 ['#', '#', '#', '#', '.', '.', '#', '#', '.', '#'],
-['#', '*', '.', '*', '.', '*', '#', '*', '.', '#'],
+['#', '*', '.', '*', '.', '*', '.', '*', '.', '#'],
 ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
 ]
 
+simpleOptimal = [ 'R', 'R', 'R', 'D', 'D', 'D', 'D', 'D', 'L', 'R', 'U', 'U', 'L', 'L', 'L', 'D', 'D', 'L', 'L', 'L', 'L', 'U', 'U', 'U', 'U', 'U', 'U', 'R', 'R', 'D', 'D', 'D', 'R', 'R', 'U'  ]
+
 gameMap = complicatedMap
+
+pos = ( 3, 5 )
+
+for dir in directions:
+    x, y =  move( pos, dir )
+    print str( dir ) + " " + complicatedMap[x][y]
 
 
 def doDraw(way):
     play = Playground.Playground(way)
     play.run()
+
+
+#doDraw("")

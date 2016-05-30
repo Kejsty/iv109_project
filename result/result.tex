@@ -8,12 +8,14 @@
 \usepackage{wrapfig}
 \usepackage{amsmath}
 \usepackage{algpseudocode}
+\usepackage{paracol}
 \newcommand{\name}{Katarína Kejstová 433820, Viktória Vozárová 433334}
 \newcommand{\datum}{Projekt IV109}
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{\name}
 \rhead{\datum}
+\setlength\parindent{0pt}
 \begin{document}
 
 \begin{titlepage}
@@ -21,22 +23,22 @@
   \bfseries
   \huge Záverečná správa
   \vskip.2in
-  \textsc{\LARGE Projektu IV109 }
+  \textsc{\LARGE projektu IV109 }
   \vskip1in
   \emph{\huge Robot - zbieranie pokladu}
 \end{center}
 
-\vskip1.4in
+\vskip3in
 
-\begin{minipage}{.25\textwidth}
+\begin{minipage}{.45\textwidth}
   \begin{flushleft}
     \bfseries\large Prednášajúci:\par \emph{doc. Mgr. Radek Pelánek, Ph.D.}
   \end{flushleft}
 \end{minipage}
-\hskip.4\textwidth
-\begin{minipage}{.25\textwidth}
+\hskip.15\textwidth
+\begin{minipage}{.40\textwidth}
   \begin{flushleft}
-    \bfseries\large Študenti:\par \emph{Katarína Kejstová} 433820 \par \emph{Viktória Vozárová} 422224
+    \bfseries\large Študenti:\par \emph{Katarína Kejstová} 433820 \par \emph{Viktória Vozárová} 433334
   \end{flushleft}
 \end{minipage}
 
@@ -44,76 +46,78 @@
 
 \centering
 \bfseries
-\Large letný semester 2016
+\Large Jarný semester 2016
 \end{titlepage}
 
-\section{Zadanie}
+\section{Zadanie projektu}
 
-Variace na příklad zmíněný na přednášce. Robot se pohybuje v čtvercové mřížce, na některých polích jsou poklady, které má posbírat, případně zdi, díry, a pod. Vytvořte genetický algoritmus, který bude vytvářet navigační kód pro robota (tak aby posbíral co nejvíce pokladu).
-
-
-stručné uvedení do tématu, objasnění základních pojmů,
-přesnou formulaci modelovaného problému, případná relevantní data,
-popis zvoleného přístupu k modelování a základních prvků modelu, vztahů a zpětných vazeb, vysvětlení základních rovnic/pravidel,
-popis výsledků simulace, ilustrace základního běhu modelu,
-popis provedených analýz modelu (analýza citlivosti jednotlivých parametrů, apd), výsledky analýz a jejich slovní interpretace,
-zhodnocení závěrů simulace, diskuze možných rozšíření.
+\textit{Variace na příklad zmíněný na přednášce. Robot se pohybuje v čtvercové mřížce, na některých polích jsou poklady, které má posbírat, případně zdi, díry, a pod. Vytvořte genetický algoritmus, který bude vytvářet navigační kód pro robota (tak aby posbíral co nejvíce pokladu).}
 
 \section{Genetické algoritmy}
  
-Genetické algoritmy sú vo všeobecnosti heuristické postupy, aplikujúce princípy z evolučnej biológie. Často sú využívané na riešenie zložitých problémov. Pre ďalší postup je potrebné definovať niektoré pojmy, spájajúca sa s genetickými algoritmami a ich aplikáciou a praxi.
+Genetické algoritmy sú vo všeobecnosti heuristické postupy, aplikujúce princípy z evolučnej biológie. Často sú využívané na riešenia zložitých problémov, pretože sú schopné vytvoriť netriviálne (náhodné) riešenia. Než začneme s popisom nášho riešenia problému, je potrebné definovať niektoré pojmy spájajúce sa s genetickými algoritmami a ich aplikáciou v praxi.\\
 
-\subsection{Terminológia}
+\textbf{Chromozóm}
 
+V aplikácii genetických algoritmov je chromozóm chápaný ako reťazec, resp. postupnosť symbolov, reprezentujúci jedinca s výslednými vlastnosťami. Každá vlastnosť nejako popisuje riešenie a preto reťazec chápeme ako riešenie.\\
 
-\noindent \textbf{Chromozóm}
-V aplikácii genetických algoritmov je chromozóm chápaný ako reťazec, a teda postupnosť symbolov, reprezentujúci jedinca s výslednými vlastnosťami, kde každá vlastnosť spadá do množiny možných, nadobudnuteľných vlastností. Tento reťazec chápeme ako riešenie.
+\textbf{Gén}
 
-Chromozóm zväčša reprezentujeme pomocou vhodných symbolo a ich kombinácii. V nešej aplikácii je množina možných vlastností daná smerom pohybu robota : \{$L,R,U,D$\} (doľava, doprava, hore, dole).
+Je základnou časťou chromozómómu. Jeden gén popisuje jednu vlastnosť. Často je reprezentovaný jedným symbolom chromozómu - reťazca, avšak môže byť tvorený aj spojením symbolov - podreťazec.\\
 
-\noindent \textbf{Gén}
-Je základnou časťou chromozómómu. Často je reprezentovaný jedným symbolom chromozómu - reťazca, avšak môže byť tvorený aj spojením symbolov - podreťazec.
+\textbf{Populácia}
 
-\noindent \textbf{Populácia}
+Populáciou rozumieme skupinu reťazcov, a teda potencionálnych riešení. Nad touto skupinou aplikujeme jednu iteráciu genetického algorimu, výstupom je nová populácia. Veľkosť populácie môže byť premenlivá, v našej aplikácii však pre jeden beh algoritmu udržiavame populáciu konštantnú.\\
 
-Populáciou rozumieme skupinu reťazcov, a ted apotencionálnych riešení. Na tejto skupine sa vždy aplikuje iterácia genetického algorimu, výstupom je opäť populácia. Veľkosť populácie môže byť premenlivá, v našej aplikácii však pre jeden výpočet udržiavame populáciu konštantnú.
+\textbf{Fitness funkcia}
 
-\noindent \textbf{Fitness funkcia}
-Táto funkcia priradí každému chromozómu, a teda riešeniu hodnotu, vypovedajúcu o jeho úspešnosti. Fitness funkcia nám teda pomáha optimalizovať riešenie na základe snahe získať chromozóm s maximálnym ohodnotením. Táto funkcia by preto mala byť vhodne definovaná.
+Táto funkcia priradí každému chromozómu, a teda riešeniu hodnotu, vypovedajúcu o jeho úspešnosti. Fitness funkcia pomáha optimalizovať riešenie na základe snahy získať chromozóm s maximálnym ohodnotením. Táto funkcia by preto mala byť vhodne definovaná.
 
-V našej aplikácii sú použité a porovnané rôzne prístupy k tvoreniu fitness funkcie a ich vyplyv na výsledné riešenie (úspešnosť robota).
+V našej aplikácii sú použité a porovnané rôzne fitness funkcie a ich vplyv na výsledné riešenie (úspešnosť robota). Každá funkcia zároveň potrebuje inak vyladené parametre, by ktorých dáva najlepšie výsledky. Tento fakt tiež zohľadníme v našej analýze.\\
 
-\noindent \textbf{Kríženie}
+\textbf{Kríženie}
 
-Kríženie je proces vzniku novej generácie potomkov. Vďaka kríženiu vznikajú nové, odlišné jedince. Krížením v konexte genetických algoritmov rozumieme vytvorenie nového reťazca kombináciou dvoch reťazcov z aktuálnej generácie populácie. 
+Kríženie využívame pri procese vzniku novej generácie potomkov. Vďaka kríženiu vznikajú nové, odlišné jedince. V kontexte genetických algoritmov tým rozumieme vytvorenie nového reťazca kombináciou dvoch reťazcov z aktuálnej populácie. 
 
-Ak kríženie nastáva na (náhodne) zvolenej pozícii $i$, a $A,B$ sú dva vybrané reťazce z aktuálnej generácie populácie, je potomkom reťazec $C = A[1..i].B[i+1..n].$, kde n je koniec reťazca $B$.\\
-Reťazce s vyšším ohodnotením fitness funkciou majú vyššiu pravdepodobnosť krížiť sa.
+Pri krížení zvolíme náhodný bod na chromozóme, $i$, a potom skrížením dvoch reťazcov $A,B$ vznikne potomkom reťazec $C = A[1..i] + B[i+1..n]$, kde $n$ je koniec reťazca $B$.\\
 
-\noindent \textbf{Mutácia}
+\textbf{Mutácia}
 
-Mutácia je proces náhodnej modifikácie určitého génu chromozómu z množiny prístupných vlastností. Mutácia génu sa uskutoční s určitou dopredu danou, a často pomerne malou, pravdepodobnosťou. Mutácie nám umožňujú objavovať nové riešenia, ku ktorým by sme sa inak nedostali. Mutácia doplňuje operáciu kríženia, a teda vytvárania novej generácie potomkov. Môže byť vynechaná.
+Mutácia je proces náhodnej modifikácie určitého génu chromozómu z množiny prístupných vlastností. Zmena génu sa uskutoční s určitou dopredu danou, a často pomerne malou, pravdepodobnosťou. To zaručí objavovanie nových riešení, ku ktorým by sme sa inak nedostali. Zabraňuje uviaznutiu v lokálnom optime. Mutácia doplňuje operáciu kríženia, a teda vytvárania novej generácie potomkov. Môže byť vynechaná.
 
 \newpage
 
-\section{Rozbor zadania}
+\section{Analýza problému}
 
-V našom riešení sme sa rozhodli pre nasledujúce reprezentácie: \\
+Prostredie, v ktorom sa robot pohybuje, je reprezentované ohraničenou mapou, na ktorej je statický počet pokladov a nejaké rozmiestnené prekážky. Uvažujeme dve rôzne mapy líšiace sa obtiažnosťou (množstvom prekážok). Všetky roboty začínajú na dopredu danej počiatočnej pozícii.
 
-Pod pojmom \textbf{gén} chápeme symbol z množiny \{$L,R,U,D$\}, reprezentujúce pohyb po bludisku (doľava, doprava, hore, dole). Potom \textbf{chromozómom} chápeme reťazec postupností pohybu, a teda cestu robota v bludisku. Dĺžka reťazca potom závisí od veľkosti bludiska, pri príliš malom nemá robot šancu pozdierať dostatok pokladu, pri príliš dlhom je už šanca zas príliš veľká, a optimalizácia je jednoduchšia. Ako \textbf{fitness} funckciu sme sa rozhodli vyskúšať rôzne kobinácie ohodnotení a správania, a tie porovnať.
+V kontexte nášho problému pod pojmom \textbf{gén} chápeme symbol z množiny \{$L, R, U, D$\}, reprezentujúci pohyb po mape (doľava, doprava, hore, dole). \textbf{Chromozómom} je reťazec symbolov pohybu, takže určuje celú cestu robota na mape. Dĺžka reťazca závisí od veľkosti mapy. Pri príliš krátkej ceste nemá robot šancu pozbierať dostatočné množstvo pokladu, pri príliš dlhom robí zbytočne veľa krokov navyše a tým stráca na kvalite. 
+
+Pri analýze sme uvažovali rôzne \textbf{fitness} funkcie líšiace sa v ohodnotení pohybu. Rozlišujeme, kedy robot nájde poklad, narazí na stenu alebo ani jedno z toho. V prípade, že robot narazí na stenu, ostane stáť na mieste.
+
 Kríženie aj mutácie prebiehali vždy s dopredu danou pravdepodonosťou na celý beh genetického algorimtu.
 
-
-\section{Aplikácia genetických algoritmov}
-Problém zbierania plechoviek sme uskutočnili na dvoch bludiskách, jednom jednoduchšom, druhé obsahovalo pomerne veľa bariér a schovaných pokladov.
+\section{Aplikácia genetického algoritmu}
+Daný problém riešime oddelene vzhľadom na dve rôzne mapy (obrázok 1, obrázok 2), s ktorými budeme pracovať pri ďalších analýzach. Počet pokladov na každej mape je $10$, veľkosť každej mapy je $10x10$. Rovnako je fixná počiatočná poloha robota.
 
 \begin{center}
-  \includegraphics[scale=0.6]{combine_images.jpg} \\
-	Vľavo: jednoduché bludisko, vpravo: komplikované bludisko
-     \end{center}
+\columnratio{0.5,0.5}
+\begin{paracol}{2}
+\setlength{\columnseprule}{0pt}
+\setlength{\columnsep}{0em}
+\begin{leftcolumn}
+	\includegraphics[scale=0.6]{simple_map.png} \\
+	Obrázok 1: jednoduchá mapa
+\end{leftcolumn}
 
-Tieto dve mapy sú po celú dobu nemenné, a rozlišujeme ich na jednoduché a komplikované bludisko.\\
-Robotovi sme určili pomerne priaznivú počiatočnú polohu. Vstupnými parametrami, ktoré sú  parametrizovateľné, sa priebeh výpočtu dá ovplyvniť v každom smere. Parametrizovať sa dajú nasledovné premenné: \\
+\begin{rightcolumn}
+	\includegraphics[scale=0.6]{complicated_map.png} \\
+	Obrázok 2: komplikovaná mapa
+\end{rightcolumn}
+\end{paracol}
+\end{center}
+
+Budeme uvažovať zmenu nasledujúcich parametrov:
 
 \begin{tabular}{ll}
 \hline
@@ -121,16 +125,15 @@ Robotovi sme určili pomerne priaznivú počiatočnú polohu. Vstupnými paramet
 \textsc{Generations} & počet generácii \\
 \textsc{Crossover}  & pravdepodobnosť kríženia  \\
 \textsc{Mutation}  &  pravdepodobnosť mutácie génov  \\
-\textsc{MinBound A MaxBound}  &  minimálna a maximálna dĺžka trasy robota \\ \hline
+\textsc{MinBound \& MaxBound}  &  minimálna a maximálna dĺžka trasy robota \\ \hline
 \end{tabular}
 
-Pohyb robota na mape je reprezentovaný červenou farbou tak, že opakovaný priechod určitým miestom sposobí silnejšie červené zafarbenie. Vo výsledku teda vidno nielen kade robot prešeiel, ale či mal aj problémové miesta, na ktorých sa zacyklil.
+Pohyb robota na mape je reprezentovaný červenou farbou tak, že opakovaný priechod určitým miestom sposobí silnejšie červené zafarbenie. Tým ukážeme, kadiaľ robot prešiel, a zároveň kde robil zbytočné kroky navyše.
 
 \section{Výsledky}
 
-Rozhodli sme sa aplikovať rôzne stratégie. Najprv sme venovali pozornosť 2 fitness funkciám, a ich výsledkom na oboch bludiskách. Ďaľším skúmaným prístupom bola rovnaká iniciálna populácia pre rôzne vstupné parametre.
+Pre jednoduchosť sme počas analýzy nemenili parameter veľkosti populácie. Ten je vo všetkých behoch rovný 100. Ďalej nemení horné a dolné ohraničenie dĺžky cesty. Všetky cesty sú dlhé $20-60$ symbolov. Definujeme dve rôzne fitness funkcie a pre každú identifikujeme, pri akých pravdepodobnostiach kríženia a mutácie funguje najlepšie. 
 
-\newpage
 
 \subsection{Výsledky na základe fitness funkcií}
 \textbf{1.stratégia}\\
